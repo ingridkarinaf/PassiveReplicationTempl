@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+option go_package = "interface/interface";
+
+package main;
+
+service Service {
+  rpc Update (UpdateRequest) returns (UpdateResponse); 
+  rpc Retrieve (RetrieveRequest) returns (RetrieveResponse);
+  rpc GetHeartBeat(HeartbeatRequest) returns (HeartbeatAck){}
+}
+
+message HeartbeatRequest {
+    string message = 1;
+}
+
+message HeartbeatAck {
+    string port = 1;
+}
+
+message UpdateRequest{
+    int32 key = 1;
+    int32 value = 2;
+    int32 time = 3;
+    int32 updaterId = 4;
+}
+
+message UpdateResponse {
+    string message = 1;
+    bool outcome = 2;
+    int32 time = 3;
+    int32 updaterId = 4;
+}
+
+message RetrieveRequest {
+    int32 id = 1;
+}
+
+message RetrieveResponse {
+    int32 outcome = 1;
+    string message = 2;
+}

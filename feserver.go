@@ -105,6 +105,7 @@ func (FE *FEServer) Redial(functionType string, updateMsg *service.UpdateRequest
 }
 
 func (FE *FEServer) Update(ctx context.Context, updateMsg *service.UpdateRequest) (*service.UpdateResponse, error) {
+	fmt.Println("inside update")
 	outcome, err := FE.primaryServer.Update(ctx, updateMsg)
 	if err != nil {
 		log.Printf("FEServer %s: Error: %s", FE.port, err)
@@ -115,7 +116,7 @@ func (FE *FEServer) Update(ctx context.Context, updateMsg *service.UpdateRequest
 }
 
 func (FE *FEServer) Retrieve(ctx context.Context, retrieveReq *service.RetrieveRequest) (*service.RetrieveResponse, error) {
-
+	fmt.Println("inside retrieve")
 	outcome, err := FE.primaryServer.Retrieve(ctx, retrieveReq)
 	if err != nil {
 		log.Printf("FEServer %s: Error %s", FE.port, err)

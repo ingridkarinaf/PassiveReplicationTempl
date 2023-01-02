@@ -39,4 +39,5 @@ message RetrieveRequest {
 message RetrieveResponse {
     int32 outcome = 1;
     string message = 2;
+    
 }

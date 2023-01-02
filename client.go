@@ -9,8 +9,8 @@ import (
 	"log"
 	"os"
 	"bufio"
-	// "context"
-	// "reflect"
+	"context"
+	"reflect"
 )
 
 /* 
@@ -50,7 +50,7 @@ func main() {
 			scanner.Scan()
 			textChoice := scanner.Text()
 			if (textChoice == "update") {
-				println("Enter value, separated by a space (integers only!)")
+				println("Enter value (integers only!)")
 				scanner.Scan()
 				text := scanner.Text()
 				inputArray := strings.Fields(text)
@@ -80,24 +80,28 @@ func main() {
 				}
 				
 			} else if (textChoice == "get") {
-				println("Enter the key of the value you would like to retireve (integers only!): ")
-				scanner.Scan()
-				text := scanner.Text()
-				key, err := strconv.Atoi(text)
-				if err != nil {
-					log.Println("Client: Could not convert key to integer: ", err)
-					continue
-				}
-				getReq := &service.RetrieveRequest{
-					Id:   int32(key),
-				}
+				// println("Enter the key of the value you would like to retireve (integers only!): ")
+				// scanner.Scan()
+				// text := scanner.Text()
+				// key, err := strconv.Atoi(text)
+				// if err != nil {
+				// 	log.Println("Client: Could not convert key to integer: ", err)
+				// 	continue
+				// }
+				
+				// getReq := &service.RetrieveRequest{
+				// 	Id:   int32(key),
+				// }
 
-				result := Retrieve(getReq) 
-				log.Printf("Client: Value of key %s: %v \n",text, int(result))
-				fmt.Printf("Value of key %s: %v \n",text, int(result))
+				//result := Retrieve(getReq) 
+				result := Retrieve(&service.RetrieveRequest{})
+				log.Printf("Client: Value of: ", int(result))
+				fmt.Printf("Client: Value of: ",int(result))
+				//log.Printf("Client: Value of "key %s: %v \n",text," int(result))
+				//fmt.Printf("Value of key %s: %v \n",text, int(result))
 			} else {
-				log.Println("Sorry, didn't catch that. ")
-				fmt.Println("Sorry, didn't catch that. ")
+				log.Println("Incorrect input. ")
+				fmt.Println("Incorrect input. ")
 			}
 		}
 	}()
@@ -107,29 +111,29 @@ func main() {
 
 //If function returns an error, redial to other front-end and try again
 func Update(hashUpt *service.UpdateRequest) (*service.UpdateResponse) {
-	// result, err := server.Update(context.Background(), hashUpt) //What does the context.background do?
-	// if err != nil {
-	// 	log.Printf("Client %s hashUpdate failed:%s. \n Redialing and retrying. \n", connection.Target(), err)
-	// 	Redial()
-	// 	return Update(hashUpt)
-	// }
-	// return result
-	return nil
+	fmt.Println("inside update")
+	result, err := server.Update(context.Background(), hashUpt) 
+	if err != nil {
+		log.Printf("Client %s hashUpdate failed:%s. \n Redialing and retrying. \n", connection.Target(), err)
+		Redial()
+		return Update(hashUpt)
+	}
+	return result
 }
 
 func Retrieve(getRsqt *service.RetrieveRequest) (int32) {
-	// result, err := server.Retrieve(context.Background(), getRsqt)
-	// if err != nil {
-	// 	log.Printf("Client %s get request failed: %s", connection.Target(), err)
-	// 	Redial()
-	// 	return Retrieve(getRsqt)
-	// }
+	fmt.Println("inside retrieve")
+	result, err := server.Retrieve(context.Background(), getRsqt)
+	if err != nil {
+		log.Printf("Client %s get request failed: %s", connection.Target(), err)
+		Redial()
+		return Retrieve(getRsqt)
+	}
 
-	// if reflect.ValueOf(result.Value).Kind() != reflect.ValueOf(int32(5)).Kind() {
-	// 	return 0
-	// }
-	// return result.Value
-	return 0
+	if reflect.ValueOf(result.Outcome).Kind() != reflect.ValueOf(int32(5)).Kind() {
+		return 0
+	}
+	return result.Outcome
 }
 
 //In the case of losing connection - alternates between predefined front-
